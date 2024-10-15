@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -41,4 +42,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    // tax prepare with one to one relationship
+    public function tax_prepare()
+    {
+        return $this->hasOne(TaxPrepare::class);
+    }
 }
