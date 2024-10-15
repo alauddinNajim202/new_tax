@@ -2,10 +2,10 @@
 
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Web\backend\AdminController;
-use App\Http\Controllers\Web\backend\ClientController;
+use App\Http\Controllers\Web\user_dashboard\ClientController;
 use App\Http\Controllers\Web\front_end\HomeController;
-use App\Http\Controllers\Web\backend\TaxPrepareController;
-use App\Http\Controllers\Web\backend\TaxPrepareProfileController;
+use App\Http\Controllers\Web\user_dashboard\TaxPrepareController;
+use App\Http\Controllers\Web\user_dashboard\TaxPrepareProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -42,9 +42,9 @@ Auth::routes();
 
 
 // admin routes
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
-});
+// Route::middleware(['auth', 'role:admin'])->group(function () {
+//     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
+// }); 
 
 
 // client routes

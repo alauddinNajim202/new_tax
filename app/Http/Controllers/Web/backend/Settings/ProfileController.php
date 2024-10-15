@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Web\Backend\Settings;
+namespace App\Http\Controllers\Web\backend\Settings;
 
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
@@ -33,8 +33,8 @@ class ProfileController extends Controller {
      */
     public function UpdateProfile(Request $request) {
         $validator = Validator::make($request->all(), [
-            'name'  => 'required|max:100|min:2',
-            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
+            'name'  => 'nullable|max:100|min:2',
+            'email' => 'nullable|email|unique:users,email,' . auth()->user()->id,
         ]);
 
         if ($validator->fails()) {
@@ -96,15 +96,17 @@ class ProfileController extends Controller {
         try {
             $user      = Auth::user();
             $image     = $request->file('profile_picture');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
 
             //? Check if there's an existing profile picture
-            if ($user->avatar && file_exists(public_path($user->avatar))) {
-                Helper::fileDelete(public_path($user->avatar));
+            if ($user->avatar) {
+                $previousImagePath = public_path($user->avatar);
+                if (file_exists($previousImagePath)) {
+                    unlink($previousImagePath);
+                }
             }
 
             //* Use the Helper class to handle the file upload
-            $imagePath = Helper::fileUpload($image, 'profile', $imageName);
+            $imagePath = uploadImage($image, 'profile');
 
             if ($imagePath === null) {
                 throw new Exception('Failed to upload image.');
