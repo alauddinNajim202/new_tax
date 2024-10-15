@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+
 
 class RegisterController extends Controller
 {
@@ -28,7 +30,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -49,7 +51,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
+            // 'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -63,10 +65,28 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+
+        $role = $data['user_type'];
+         $role = $role == 'tax-preparer' ? 'tax_prepare' : 'client';
+        // dd($role);
         return User::create([
-            'name' => $data['name'],
+            // 'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'role' => $role
         ]);
+    }
+
+    protected function registered(Request $request, $user)
+    {
+        // dd($request->all(), auth()->user()->id);
+        // Redirect based on user role
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'tax_prepare') {
+            return redirect()->route('home.start_questions',['user_id' => auth()->user()->id]);
+        } else {
+            return redirect()->route('client.index');
+        }
     }
 }
