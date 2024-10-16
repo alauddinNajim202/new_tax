@@ -22,7 +22,22 @@ class SearchController extends Controller
     }
 
     public function search_results(Request $request){
-        dd($request->query('address'));
+        // dd($request->address);
+
+        $search = $request->address;
+
+
+        $firstWord = explode(' ', trim($search))[0];
+
+        $tax_prepare = TaxPrepare::where(function ($query) use ($firstWord) {
+            $query->where('business_address', 'LIKE', "{$firstWord}%") // Start with the first word, case-insensitive
+                  ->orWhere('business_address', 'LIKE', "%{$firstWord}%"); // Contains the first word, case-insensitive
+        })
+        ->get();
+
+
+        // dd($tax_prepare);
+
         return view('front_end.layouts.tax_prepare_list');
     }
 

@@ -86,12 +86,19 @@
                     <input placeholder="Enter your Business Name" id="business-name"
                         value="{{ $tax_prepare ? $tax_prepare->business_name : '' }}" name="business-name" type="text">
                 </div>
+
+
                 <div class="form-item">
                     <label for="">Business Address</label>
                     <input placeholder="Enter your Business Address" id="business-address"
                         value="{{ $tax_prepare ? $tax_prepare->business_address : '' }}" name="business-address"
                         type="text">
                 </div>
+
+
+
+
+
                 <div class="step-form-actions mt-5">
                     <a id="form-step-1-next-btn" class="next-btn">Save and Next</a>
                 </div>
