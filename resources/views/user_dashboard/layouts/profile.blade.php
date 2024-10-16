@@ -77,7 +77,7 @@
 
                 </div>
                 <div class="form-item">
-                    <label for="">Full Name</label>
+                    <label for="">Full Name </label>
                     <input placeholder="Enter your Full Name" id="full-name"
                         value="{{ $tax_prepare ? $tax_prepare->full_name : '' }}" name="full-name" type="text">
                 </div>
