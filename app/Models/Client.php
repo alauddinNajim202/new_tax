@@ -11,7 +11,13 @@ class Client extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['avatar','city','latitude','longitude'];
+    protected $fillable = ['avatar','city','latitude','longitude','user_id'];
+
+
+    public function user(){
+
+        return $this->belongsTo(User::class);
+    }
 
 
 
