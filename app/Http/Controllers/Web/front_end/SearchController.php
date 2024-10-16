@@ -3,46 +3,28 @@
 namespace App\Http\Controllers\Web\front_end;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use App\Models\TaxPrepare;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class SearchController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        return view('front_end.layouts.home');
+    public function search_locations(Request $request){
+        // dd($request->all());
+
+        $search = $request->city;
+
+        $tax_prepare  = TaxPrepare::where('business_address', 'LIKE',"%{$search}%")->get();
+
+        return $tax_prepare;
     }
 
-
-    public function join()
-    {
-        return view('front_end.layouts.join');
+    public function search_results(Request $request){
+        dd($request->query('address'));
+        return view('front_end.layouts.tax_prepare_list');
     }
-
-    public function join_tax_prepare()
-    {
-        return view('front_end.layouts.join-as-preparer');
-    }
-
-    public function start_questions()
-    {
-        return view('front_end.layouts.start-questions');
-    }
-
-
-    public function category(){
-        return view('front_end.layouts.categories');
-    }
-
-
-
-
-
-
 
 
 

@@ -203,7 +203,7 @@
                     <div class="service-categories-modal">
 
                         @foreach ($service_categories as $category)
-                            <div id="{{$category->id}}" class="item">{{$category->name}} </div>
+                            <div id="{{ $category->id }}" class="item">{{ $category->name }} </div>
                         @endforeach
 
                     </div>
