@@ -238,7 +238,7 @@
         </div>
         <div class="profile-container">
 
-            {{-- @php
+          {{-- @php
                 $user_id = auth()->user()->id;
 
                 $tax_prepare = App\Models\TaxPrepare::where('user_id', $user_id)->first();
@@ -249,9 +249,9 @@
                 <img id="user-account-profile-btn" src="{{ asset('user_dashboard/tax_prepare/images/'.$tax_prepare->profile_photo) }}"
                     alt="" />
             @else --}}
-                <img id="user-account-profile-btn" src="{{ asset('user_dashboard/assets/images/user.png') }}"
-                    alt="" />
-            {{-- @endif --}}
+            <img id="user-account-profile-btn" src="{{ asset('user_dashboard/assets/images/user.png') }}"
+            alt="" />
+    {{-- @endif --}}
 
 
             <!-- profile modal start -->

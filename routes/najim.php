@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\backend\ClientController;
 use App\Http\Controllers\Web\front_end\HomeController;
 use App\Http\Controllers\Web\backend\TaxPrepareController;
 use App\Http\Controllers\Web\backend\TaxPrepareProfileController;
+use App\Http\Controllers\Web\backend\ClientProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +56,10 @@ Route::middleware(['auth', 'role:client'])->group(function () {
     Route::get('/client/bookings', [ClientController::class, 'booking'])->name('client.booking');
     Route::get('/client/profile-bookings', [ClientController::class, 'profile_booking'])->name('client.profile_booking');
     Route::get('/client/document-center', [ClientController::class, 'document_center'])->name('client.document_center');
+
+    //client profile routes
+    Route::get('client/profile',[ClientProfileController::class,'profile'])->name('client.profile.profile');
+    Route::post('/client/profile/update', [ClientProfileController::class, 'update'])->name('client.profile.update');
 
 });
 
