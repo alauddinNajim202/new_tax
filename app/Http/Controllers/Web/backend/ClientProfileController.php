@@ -115,7 +115,7 @@ class ClientProfileController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Profile updated successfully.',
-            'route' => route("client.profile.profile")
+            'route' => route("client.profile.update")
         ]);
 
 

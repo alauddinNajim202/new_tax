@@ -14,8 +14,11 @@
             </div>
         </div>
 
-        <!-- Update form to point to the controller's store method -->
-        <form class="custom-form profile-custom-form" action="{{ route('client.profile.update') }}" method="POST"
+
+
+
+     <!-- Update form to point to the controller's store method -->
+      <form class="custom-form profile-custom-form"
             enctype="multipart/form-data">
             @csrf <!-- Add CSRF token for security -->
 
@@ -32,20 +35,13 @@
                         <p class="upload-photo-text" id="uploadText">Upload Profile Photo</p>
 
                         <!-- Show existing photo if available -->
-                        <div>
+                        <div class="uploaded-profile-photo" id="uploadedPhotoContainer">
                             @if ($client && $client->avatar)
                                 <img src="{{ asset('user_dashboard/client/avatars/' . $client->avatar) }}"
                                     alt="Uploaded Profile" class="uploaded-profile-photo-img" width="100" height="100">
-                                <a class="profile-photo-cross-btn" id="deleteBtn">x</a>
                             @endif
                         </div>
-                        {{-- <div class="uploaded-profile-photo" id="uploadedPhotoContainer">
-                            <img accept="image/*" width="100$" height="100" class="uploaded-profile-photo-img"
-                                id="uploadedImage"
-                                src="{{ asset('user_dashboard/client/avatars/' . $client->avatar) }}"
-                                alt="Uploaded Profile">
-                            <a class="profile-photo-cross-btn" id="deleteBtn">x</a>
-                        </div> --}}
+
                     </div>
                 </div>
 
@@ -58,64 +54,55 @@
                 </div>
 
                 <div class="step-form-actions mt-5">
-                    <button type="submit" onclick="client_update({{ $client->id }});" class="next-btn">Save and
-                        Next</button>
+
+
+                    <a class="next-btn" onclick="client_update({{ $client->id }});">Save and Next</a>
                 </div>
+
+
             </div>
         </form>
-
+    
     </div>
 @endsection
 
+@push('scripts')
+    <script>
+        function client_update(client_id) {
+            var city = $("#city").val();
+            var avatar = $("#upload-profile-photo-input")[0].files[0];
 
+            // Create a FormData object and append the necessary fields
+            var formData = new FormData();
+            formData.append('city', city);
+            if (avatar) {
+                formData.append('avatar', avatar);
+            }
+            formData.append('_token', '{{ csrf_token() }}'); // Include CSRF token
 
-
-
-
-
-<script>
- function client_update(client_id) {
-
-var city = $("#city").val();
-var avatar = $("#upload-profile-photo-input")[0].files[0];
-
-    // AJAX request
-    $.ajax({
-                url: "/client/profile/update",
+            // AJAX request
+            $.ajax({
+                url: "{{ route('client.profile.update') }}", // Use the correct route here
                 type: "POST",
                 dataType: "JSON",
-                processData: false,
-                contentType: false,
+                processData: false, // Prevent jQuery from processing the data
+                contentType: false, // Prevent jQuery from setting contentType
                 data: formData,
                 success: function(response) {
                     if (response.status === "success") {
                         toastr.success(response.message);
-                        window.location.href = response.route;
+                        window.location.href = response.route; // Redirect if needed
                     } else {
                         toastr.error(response.message);
                     }
                 },
                 error: function(xhr, status, error) {
-                    toastr.error(response.message);
+                    toastr.error("An error occurred. Please try again.");
                 }
             });
         }
-</script>
+    </script>
+@endpush
 
 
-{{-- For Toaster message --}}
-{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // Display success toastr message
-        @if(session('success'))
-            toastr.success('{{ session('success') }}');
-        @endif
-
-        // Display error toastr message
-        @if(session('error'))
-            toastr.error('{{ session('error') }}');
-        @endif
-    });
-</script> --}}
 
