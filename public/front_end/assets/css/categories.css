@@ -743,7 +743,7 @@ a {
  #calendar-container {
     width: 100% !important;
     margin: 0 auto;
-} 
+}
 /* Custom styles for the Easepick calendar */
 
 /* Style for the selected date */
@@ -1183,7 +1183,7 @@ line-height: 24px;
     .categories-tax-service-section {
         padding: 70px 0px;
     }
-   
+
 }
 @media only screen and (min-width: 1200px) and (max-width: 1400px) {
          /* question */
@@ -1192,7 +1192,7 @@ line-height: 24px;
            }
            .question-area{
             position: relative;
-    
+
         }
            .question-area .sign-in-up-form-area {
             width: 100%;
@@ -1217,7 +1217,7 @@ line-height: 24px;
             font-size: 24px;
             line-height: 40px;
         }
-   
+
 }
 @media only screen and (min-width: 993px) and (max-width: 1199px) {
     .categories-tax-service-section {
@@ -1436,7 +1436,7 @@ line-height: 24px;
     .categories-tax-card-wrapper{
         grid-template-columns: repeat(2,1fr) !important;
     }
-    
+
 }
 @media (max-width: 700px) {
     /* join.html start */
