@@ -6,17 +6,14 @@
     <title>Google Maps Location Search</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <!-- Latest glyphonic cdn -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" crossorigin="anonymous">
 </head>
 
 <body>
     <div class="container">
-        <h2>Search for a Location</h2>
+        <h2>Search or Click for a Location</h2>
         <input id="locationInput" type="text" placeholder="Enter a location" style="width: 100%; margin-bottom: 10px;">
         <div id="map" style="height: 400px;"></div>
     </div>
@@ -28,67 +25,97 @@
             var marker;
             var defaultLocation = { lat: 23.8103, lng: 90.4125 }; // Default location
 
-            // Initialize the map with the default location
             var mapOptions = {
-                center: defaultLocation, // Set the initial center to the default location
-                zoom: 14, // Set the zoom level
+                center: defaultLocation,
+                zoom: 14,
             };
 
             map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-            // Initialize a marker at the default position
             marker = new google.maps.Marker({
-                position: defaultLocation, // Set the initial position to the default location
+                position: defaultLocation,
                 map: map,
-                title: 'Default Location'
+                title: 'Default Location',
+                draggable: true // Allow dragging to fine-tune the position
             });
 
-            // Create a Geocoder instance
             var geocoder = new google.maps.Geocoder();
-
-            // Create an Autocomplete instance
             var autocomplete = new google.maps.places.Autocomplete(document.getElementById('locationInput'));
             autocomplete.bindTo('bounds', map);
 
-            // Handle the place selection event
+            // Handle place search from the input box
             autocomplete.addListener('place_changed', function() {
                 var place = autocomplete.getPlace();
                 if (!place.geometry) {
-                    // User entered the name of a Place that was not suggested and pressed "Enter"
                     alert("No details available for input: '" + place.name + "'");
                     return;
                 }
 
-                // If the place has a geometry, then present it on a map.
+                var locationData = {
+                    name: place.name,
+                    latitude: place.geometry.location.lat(),
+                    longitude: place.geometry.location.lng()
+                };
+
+                // Move the marker to the searched location
                 if (place.geometry.viewport) {
                     map.fitBounds(place.geometry.viewport);
                 } else {
                     map.setCenter(place.geometry.location);
-                    map.setZoom(14); // Adjust the zoom level as needed
+                    map.setZoom(14);
                 }
-
-                // Update the marker position
                 marker.setPosition(place.geometry.location);
                 marker.setTitle(place.name);
+
+                // Save the data via AJAX
+                saveLocation(locationData);
             });
 
-            // Handle the search functionality on Enter key press
-            $('#locationInput').on('keypress', function(event) {
-                if (event.which === 13) { // Check if Enter key is pressed
-                    var location = $(this).val();
+            // Handle map click event to get latitude and longitude
+            map.addListener('click', function(event) {
+                var clickedLocation = {
+                    latitude: event.latLng.lat(),
+                    longitude: event.latLng.lng()
+                };
 
-                    // Geocode the location
-                    geocoder.geocode({ 'address': location }, function(results, status) {
-                        if (status === 'OK') {
-                            // Update the map center and marker position
-                            map.setCenter(results[0].geometry.location);
-                            marker.setPosition(results[0].geometry.location); // Update the marker's position
-                        } else {
-                            alert('Location not found: ' + status);
-                        }
-                    });
-                }
+                // Set the marker position where the map was clicked
+                marker.setPosition(event.latLng);
+                marker.setTitle("Clicked Location");
+
+                // Use reverse geocoding to get the location name
+                geocoder.geocode({ 'location': event.latLng }, function(results, status) {
+                    if (status === 'OK' && results[0]) {
+                        clickedLocation.name = results[0].formatted_address;
+
+                        // Save the clicked location data via AJAX
+                        saveLocation(clickedLocation);
+                    } else {
+                        alert('Location name not found. Saving coordinates only.');
+                        clickedLocation.name = 'Unknown location';
+                        saveLocation(clickedLocation);
+                    }
+                });
             });
+
+            // Function to save location data via AJAX
+            function saveLocation(locationData) {
+                $.ajax({
+                    url: '{{route('locations.store')}}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}', // CSRF token for security
+                        name: locationData.name,
+                        latitude: locationData.latitude,
+                        longitude: locationData.longitude
+                    },
+                    success: function(response) {
+                        alert(response.success);
+                    },
+                    error: function(xhr) {
+                        alert('An error occurred: ' + xhr.responseText);
+                    }
+                });
+            }
         });
     </script>
 </body>

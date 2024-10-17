@@ -21,9 +21,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/map', function () {
-    return view('map');
-});
+// Route::get('/map', function () {
+//     return view('map');
+// });
 
 
 // front end landing page routes
@@ -83,3 +83,9 @@ Route::middleware(['auth', 'role:tax_prepare'])->group(function () {
     Route::post('/tax-prepare/profile/update', [TaxPrepareProfileController::class, 'update'])->name('tax_prepare.profile.update');
 
 });
+
+
+
+
+Route::get('/create-locations', [SearchController::class, 'create'])->name('locations.create');
+Route::post('/locations-store', [SearchController::class, 'store'])->name('locations.store');

@@ -49,7 +49,7 @@ class SearchController extends Controller
      */
     public function create()
     {
-        //
+        return view('map');
     }
 
     /**
@@ -57,7 +57,21 @@ class SearchController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ]);
+
+        $tax_prepare = TaxPrepare::find(2);
+
+        $tax_prepare->business_address = $request->name;
+        $tax_prepare->latitude = $request->latitude;
+        $tax_prepare->longitude = $request->longitude;
+        $tax_prepare->save();
+
+        return redirect()->back()->with('success', 'Location saved successfully.');
     }
 
     /**
